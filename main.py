@@ -1,12 +1,42 @@
 import sys
+import Queue
+import threading
+import socket
+import time
 
-class Connection(object):
-	def __init__(self):
-		self.out_sockets = {}
-		self.in_channels = {}
+QUERY_Q = Queue.Queue()
+QUERY_LOCK = threading.Lock()
 
-	def start_listen(self):
-		
+def listen(ip, port):
+	# receive message - TCP
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sock.bind((ip, port))
+	sock.listen(16)
+
+	# wait 5 seconds for other servers
+	time.sleep(5)
+
+	while True:
+		stream, addr = sock.accept() # rcv stream
+		data = stream.recv(1024) # buffer size of 1024 bytes
+		if not data:
+			continue
+		QUERY_LOCK.acquire()
+		QUERY_Q.put(data)
+		QUERY_LOCK.release()
+
+def process():
+	# wait 5 seconds for other servers
+	time.sleep(5)
+
+	while True:
+		if QUERY_Q.empty():
+			continue
+		# Lock/unlock QUERY_LOCK
+		QUERY_LOCK.acquire()
+		query = QUERY_Q.get()
+		QUERY_LOCK.release()
+
 
 class PRM(object):
 	def __init__(self, start_log):
@@ -44,19 +74,40 @@ class Log(object):
 				self.word_dict[word] += count
 
 def main():
+	global QUERY_Q, QUERY_LOCK
+	# Notes
+	#	add sleeps
 
-	# add sleeps!
-
+	# get arguments
 	if len(sys.argv) != 4:
 		print ("ERROR: Please check your arguments")
 		print ("USAGE: ./prm [filename] [IP] [port]")
 		sys.exit(0)
-
 	sys_filename = sys.argv[1]
 	sys_ip_address = sys.argv[2]
 	sys_port = int(sys.argv[3])
 
+	thread1 = threading.Thread(target=process)
+	thread2 = threading.Thread(target=listen, args=[sys_ip_address, sys_port]);
+	thread1.start()
+	thread2.start()
+
+	# when does program end?
+	# t2.setDaemon(True) # daemon thread 
+
+	# PRM
 	myPRM = PRM(Log(sys_filename))
+
+
+
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
 	main()
