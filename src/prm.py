@@ -43,8 +43,9 @@ def listen(ip, port):
 		data = stream.recv(1024) # buffer size of 1024 bytes
 		if not data:
 			continue
+		data = str(addr[0]) + " " + data
 		QUERY_LOCK.acquire()
-		QUERY_Q.put(addr + " " + data)
+		QUERY_Q.put(data)
 		QUERY_LOCK.release()
 		# Exit
 		if data.split()[1] == "exit":
@@ -59,7 +60,7 @@ def process():
 			if SYS_PRM.accept_num == None and len(SYS_PRM.wait_queue) > 0:
 				# not sending/receiving anything
 				# and SYS_PRM.wait_queue is not empty
-				self.prepare()
+				SYS_PRM.prepare()
 			continue
 
 		# Lock/unlock QUERY_LOCK
@@ -238,7 +239,7 @@ def main():
 
 	# run threads
 	thread1 = threading.Thread(target=process)
-	thread2 = threading.Thread(target=listen, args=[sys_ip_address, sys_port]);
+	thread2 = threading.Thread(target=listen, args=[sys_ip_address, sys_port])
 	thread1.start()
 	thread2.start()
 	thread1.join()
