@@ -221,9 +221,6 @@ class Log(object):
 
 def main():
 	global QUERY_Q, QUERY_LOCK, PRM_SEND_LIST, SYS_PRM
-	# Notes
-	#	add sleeps
-
 	# get arguments
 	if len(sys.argv) != 3:
 		print ("ERROR: Please check your arguments")
