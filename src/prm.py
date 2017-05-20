@@ -3,9 +3,16 @@ import Queue
 import threading
 import socket
 import time
+import pickle
 
 QUERY_Q = Queue.Queue()
 QUERY_LOCK = threading.Lock()
+
+def setup():
+	# setup CLI IP/PORT (same IP & port 5001)
+	# get a list/dict of other IP/Port of PRM (different IP & port 5005)
+	# recv/send is from asg 1
+	return
 
 def listen(ip, port):
 	# receive message - TCP
@@ -81,11 +88,14 @@ def main():
 	# get arguments
 	if len(sys.argv) != 4:
 		print ("ERROR: Please check your arguments")
-		print ("USAGE: ./prm [filename] [IP] [port]")
+		print ("USAGE: ./prm [setup_prm] [reduced_file] [IP] [port]")
 		sys.exit(0)
 	sys_filename = sys.argv[1]
 	sys_ip_address = sys.argv[2]
 	sys_port = int(sys.argv[3])
+
+	# PRM
+	myPRM = PRM(Log(sys_filename))
 
 	thread1 = threading.Thread(target=process)
 	thread2 = threading.Thread(target=listen, args=[sys_ip_address, sys_port]);
@@ -95,8 +105,7 @@ def main():
 	# when does program end?
 	# t2.setDaemon(True) # daemon thread 
 
-	# PRM
-	myPRM = PRM(Log(sys_filename))
+
 
 
 
