@@ -3,6 +3,7 @@
 # Ethan Wang
 # Spring 2017
 
+<pre>
 Note: All call are lower case except filenames
 
 CLI call format:
@@ -33,3 +34,4 @@ Port Numbers:
 Setup files:
 prm: list of ip/port of other PRM
 cli: unnecessary, assuming we already know the ports
+</pre>
