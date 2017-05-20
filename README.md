@@ -8,20 +8,20 @@ Note: All call are lower case except filenames
 
 CLI call format:
 <PRM>
-exit
-stop
-resume
-replicate [filename]
-merge [pos1] [pos2]
-total [pos1 pos2 ..]
-print
+ip exit
+ip stop
+ip resume
+ip replicate [filename]
+ip merge [pos1] [pos2]
+ip total [pos1 pos2 ..]
+ip print
 
 PRM call format:
 <PRM>
-prm [object]
-propose
-ack
-accept 
+ip prm [object]
+ip prepare
+ip ack
+ip accept 
 
 Port Numbers:
 5001 - CLI
