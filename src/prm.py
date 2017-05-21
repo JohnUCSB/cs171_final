@@ -98,7 +98,7 @@ def process():
 				SYS_PRM.first_accept_majority = True
 				pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_num, SYS_PRM.accept_val]
 				textstream = "ack " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
-				SYS_PRM.send(src_ip, 5004, textstream) #DEBUG 5005
+				SYS_PRM.send(src_ip, 5005, textstream)
 				print "<sending ack to 5004!>"
 		elif command == "ack":
 			# ip ack pickle_stream([ballot_num, accept_num, accept_val])
@@ -271,7 +271,6 @@ class Log(object):
 
 def main():
 	global QUERY_Q, QUERY_LOCK, PRM_SEND_LIST, SYS_PRM
-	'''
 	# get arguments
 	if len(sys.argv) != 3:
 		print ("ERROR: Please check your arguments")
@@ -284,28 +283,6 @@ def main():
 	# initialize
 	prm_id = setup(sys_setup, sys_ip_address)
 	SYS_PRM = PRM(prm_id, sys_ip_address)
-	'''
-	''''''
-	# debug mode
-	if int(sys.argv[1]) == 4:
-		sys_ip_address = "127.0.0.1"
-		sys_port = 5004
-		prm_id = 4
-		SYS_PRM = PRM(prm_id, sys_ip_address)
-		PRM_SEND_LIST = [("127.0.0.1", 5002), ("127.0.0.1", 5003)]
-	elif int(sys.argv[1]) == 2:
-		sys_ip_address = "127.0.0.1"
-		sys_port = 5002
-		prm_id = 2
-		SYS_PRM = PRM(prm_id, sys_ip_address)
-		PRM_SEND_LIST = [("127.0.0.1", 5004), ("127.0.0.1", 5003)]
-	elif int(sys.argv[1]) == 3:
-		sys_ip_address = "127.0.0.1"
-		sys_port = 5003
-		prm_id = 3
-		SYS_PRM = PRM(prm_id, sys_ip_address)
-		PRM_SEND_LIST = [("127.0.0.1", 5002), ("127.0.0.1", 5004)]
-	''''''
 
 	# run threads
 	thread1 = threading.Thread(target=process)
