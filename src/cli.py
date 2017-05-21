@@ -86,7 +86,7 @@ def process(ip):
 				s.close()
 			#exit
 			elif tokens[0]=="exit":
-				if tokens[1] == "cli":
+				if len(token) == 0 or tokens[1] == "cli":
 					print("exiting")
 					break
 				elif tokens[1] == "prm":

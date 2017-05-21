@@ -146,8 +146,8 @@ def process():
 					else:
 						# pass on accepts (not original sender)
 						pickle_array = [b_new, accept_array[1]]
-						SYS_PRM.send_prm(textstream)
 						textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
+						SYS_PRM.send_prm(textstream)
 						print "<sending accept via accept to all!>"
 			elif b_new[0] > b_old[0] or (b_new[0] == b_old[0] and b_new[1] > b_old[1]):
 				print "hi2.1"
