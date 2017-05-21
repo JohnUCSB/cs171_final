@@ -34,4 +34,13 @@ Port Numbers:
 Setup files:
 prm: list of ip/port of other PRM
 cli: unnecessary, assuming we already know the ports
+
+<Azure VM>
+ssh geon@13.78.178.146
+ssh geon@52.161.17.16
+ssh geon@52.161.107.167
+
+cat ~/.ssh/id_rsa.pub
+http://portal.azure.com.
+https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal
 </pre>
