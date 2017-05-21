@@ -6,7 +6,7 @@ import time
 
 # TODO:
 # coverage edge cases like "merge" instead of "merge [1] [2]"
-
+# Node: sending to PRM must have 2 parts [command] [msg]
 def listen(ip, port):
 	# receive message - TCP
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,6 +21,7 @@ def listen(ip, port):
 		data = stream.recv(1024) # buffer size of 1024 bytes
 		if not data:
 			continue
+		print "got data"
 		print (data)
 
 def process(ip):
@@ -92,12 +93,38 @@ def process(ip):
 					s.connect((ip, 5005))
 					s.sendall("exit")
 					s.close()
+			elif tokens[0] == "debug":
+				if tokens[1] == "2":
+					s.connect((ip, 5002))
+					s.sendall("replicate ./test/reduced1.txt")
+					s.close()		
+				elif tokens[1] == "3":
+					s.connect((ip, 5003))
+					s.sendall("replicate ./test/reduced2.txt")
+					s.close()
+				elif tokens[1] == "4":
+					s.connect((ip, 5004))
+					s.sendall("replicate ./test/reduced3.txt")
+					s.close()
+				elif tokens[1] == "print":
+					s.connect((ip, 5002))
+					s.sendall("print")
+					s.close()
+					s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+					s.connect((ip, 5003))
+					s.sendall("print")
+					s.close()
+					s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)	
+					s.connect((ip, 5004))
+					s.sendall("print")
+					s.close()		
 			else:
 				print("Usage: map filename | reduce filename1 filename2 ..... | replicate filename | stop | resume | total pos1 pos2 ..... | print | merge pos1 pos2")
 
 
 def main():
 	# get arguments
+	'''
 	if len(sys.argv) != 2:
 		print ("ERROR: Please check your arguments")
 		print ("USAGE: ./prm [IP]")
@@ -105,6 +132,12 @@ def main():
 
 	TCP_IP = sys.argv[1]
 	TCP_PORT = 5001
+	'''
+	''''''
+	# debug mode
+	TCP_IP = "127.0.0.1"
+	TCP_PORT = 5001
+	''''''
 
 	thread1 = threading.Thread(target=process, args=[TCP_IP])
 	thread2 = threading.Thread(target=listen, args=[TCP_IP, TCP_PORT])
