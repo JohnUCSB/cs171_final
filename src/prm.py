@@ -13,15 +13,15 @@ SYS_PRM = None
 
 
 def setup(filename, ip):
-	# setup CLI IP/PORT (same IP & port 5001)
+	# setup CLI IP
 	# get a list of other IP/Port of PRM (different IP & port 5005)
 	# recv/send is from asg 1
 	prm_id = None
 	id_counter = 0
 	filestream = open(filename, "r").read().splitlines()
 	for line in filestream:
-		tmp_ip, tmp_port = line.split()
-		tmp_port = int(tmp_port)
+		tmp_ip = line
+		tmp_port = 5005
 		if ip != tmp_ip: 
 			PRM_SEND_LIST.append((tmp_ip, tmp_port))
 			id_counter += 1
