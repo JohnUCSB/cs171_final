@@ -202,56 +202,69 @@ class PRM(object):
 		# Logs
 		self.logs = []
 		self.wait_queue = collections.deque()
+		#status
+		self.stopped = False
 
 	# PRM calls from CLI
 	def replicate(self, filename):
-		# parse new log to wait_queue
-		self.wait_queue.append(Log(filename))
-		self.prepare()
+		if not self.stopped:
+			# parse new log to wait_queue
+			self.wait_queue.append(Log(filename))
+			self.prepare()
 	def stop(self):
+		self.stopped = True
 		return
 	def resume(self):
+		self.stopped = False
 		return
 
 	# Data query calls from CLI
 	def merge(self):
-		return
+		if not self.stopped:
+			return
 	def total(self):
-		return
+		if not self.stopped:
+			return
 	def print_filenames(self):
-		return
+		if not self.stopped:
+			return
 	def print_logs(self):
-		ret = ""
-		index = 0
-		for log in self.logs:
-			ret += "0: " + str(log.word_dict) + " from " + str(log.filename) + "\n"
-		return ret
+		if not self.stopped:
+			ret = ""
+			index = 0
+			for log in self.logs:
+				ret += "0: " + str(log.word_dict) + " from " + str(log.filename) + "\n"
+			return ret
 
 	# Helpers
 	def prepare(self):
-		# prepare
-		self.ballot_num = [self.ballot_num[0]+1, self.id]
-		self.accept_num = None
-		self.accept_val = None
-		# send
-		textstream = pickle.dumps(self.ballot_num, protocol=pickle.HIGHEST_PROTOCOL)
-		self.send_prm("prepare " + textstream)
+		if not self.stopped:
+			# prepare
+			self.ballot_num = [self.ballot_num[0]+1, self.id]
+			self.accept_num = None
+			self.accept_val = None
+			# send
+			textstream = pickle.dumps(self.ballot_num, protocol=pickle.HIGHEST_PROTOCOL)
+			self.send_prm("prepare " + textstream)
 	def send(self, send_ip, send_port, textstream):
-		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		sock.connect((send_ip, send_port))
-		sock.sendall(textstream)
-		sock.close()
-	def send_prm(self, textstream):
-		for dst in PRM_SEND_LIST:
+		if not self.stopped:
 			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			sock.connect(dst)
+			sock.connect((send_ip, send_port))
 			sock.sendall(textstream)
 			sock.close()
+	def send_prm(self, textstream):
+		if not self.stopped:
+			for dst in PRM_SEND_LIST:
+				sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+				sock.connect(dst)
+				sock.sendall(textstream)
+				sock.close()
 	def send_cli(self, textstream):
-		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		sock.connect((self.ip, 5001))
-		sock.sendall(textstream)
-		sock.close()
+		if not self.stopped:
+			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			sock.connect((self.ip, 5001))
+			sock.sendall(textstream)
+			sock.close()
 
 class Log(object):
 	def __init__(self, filename):
