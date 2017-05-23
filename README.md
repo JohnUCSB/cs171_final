@@ -3,6 +3,15 @@ CS171 Final Project S17
 ### Geon Lee
 ### Ethan Wang
 
+TODO
+==============
+* mappers (2)
+* reducer (1)
+* PRM: randomized delay for failed propose/accepts
+* PRM: checking for recovery (if there are any missing logs) after "resume" & quick checks after each "accept"
+* PRM: stop/resume 
+* PRM: other print/merge/total commands from CLI
+
 Azure Virtual Machines
 ==============
 ### ssh [login] --- [ip address]:
