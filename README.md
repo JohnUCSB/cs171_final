@@ -6,9 +6,9 @@ CS171 Final Project S17
 Azure Virtual Machines
 ==============
 ### ssh [login] --- [ip address]:
-* ssh   geon@13.78.178.146  ---  10.0.0.4
-* ssh   geon@52.161.17.16   ---  10.0.0.5
-* ssh   geon@52.161.107.167  --- 10.0.0.6
+* ssh   ethangeon@52.161.104.183  ---  	10.0.1.4
+* ssh   ethangeon@52.161.108.70   ---  10.0.1.5
+* ssh   ethangeon@52.161.109.240  --- 10.0.1.6
 ### Port Numbers:
 * 5001 - CLI
 * 5002 - Map1
