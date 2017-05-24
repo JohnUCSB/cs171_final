@@ -173,6 +173,7 @@ def process():
 		elif command == "stop":
 			SYS_PRM.stop() # ip stop
 		elif command == "resume":
+			print msg
 			SYS_PRM.resume() # ip resume
 		elif command == "merge":
 			SYS_PRM.merge() # ip merge [pos1] [pos2]
@@ -252,7 +253,8 @@ class PRM(object):
 			ret = ""
 			index = 0
 			for log in self.logs:
-				ret += "0: " + str(log.word_dict) + " from " + str(log.filename) + "\n"
+				ret += str(index) + ": " + str(log.word_dict) + " from " + str(log.filename) + "\n"
+				index += 1
 			print ret
 
 	# Helpers
