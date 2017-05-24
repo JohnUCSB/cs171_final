@@ -93,7 +93,15 @@ def process(ip):
 				elif tokens[1] == "prm":
 					s.connect((ip, 5005))
 					s.sendall("exit")
-					s.close()	
+					s.close()
+				#if no argument given, exit both cli and prm
+				else:
+					s.connect((ip, 5005))
+					s.sendall("exit")
+					s.close()
+					print("exiting")
+					break
+
 			else:
 				print("Usage: map filename | reduce filename1 filename2 ..... | replicate filename | stop | resume | total pos1 pos2 ..... | print | merge pos1 pos2")
 
