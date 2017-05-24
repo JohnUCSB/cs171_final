@@ -235,7 +235,7 @@ class PRM(object):
 	def total(self):
 		if not self.stopped:
 			total_result = {}
-			for log in self.Logs:
+			for log in self.logs:
 				for word in log.word_dict:
 					if not word in total_result:
 						total_result[word] = log[word]
