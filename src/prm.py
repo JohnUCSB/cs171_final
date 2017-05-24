@@ -32,6 +32,7 @@ def setup(filename, ip):
 def listen(ip, port):
 	# receive message - TCP
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	sock.bind((ip, port))
 	sock.listen(16)
 
@@ -219,9 +220,17 @@ class PRM(object):
 		return
 
 	# Data query calls from CLI
-	def merge(self):
+	def merge(self, pos1, pos2):
 		if not self.stopped:
-			return
+			to_be_merged = [self.logs[pos1],self.logs[pos2]]
+			merge_result = {}
+			for log in to_be_merged:
+				for word in log.word_dict:
+					if not word in merge_result:
+						merge_result[word] = log[word]
+					else:
+						merge_result[word] += log[word]
+			print merge_result
 
 	def total(self):
 		if not self.stopped:
@@ -232,12 +241,6 @@ class PRM(object):
 						total_result[word] = log[word]
 					else:
 						total_result[word] += log[word]
-				word, count = line.split()
-				count = int(count)
-				if not word in self.word_dict:
-					self.word_dict[word] = count
-				else:
-					self.word_dict[word] += count
 			print total_result
 
 	def print_filenames(self):
