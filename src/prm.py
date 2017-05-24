@@ -177,7 +177,7 @@ def process():
 			SYS_PRM.resume() # ip resume
 		elif command == "merge":
 			poss = msg.split();
-			if len(msg)==2:
+			if len(poss)==2:
 				pos1 = int(poss[0]);
 				pos2 = int(poss[1]);
 				SYS_PRM.merge(pos1, pos2) # ip merge [pos1] [pos2]
