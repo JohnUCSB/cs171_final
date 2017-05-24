@@ -176,7 +176,13 @@ def process():
 			print msg
 			SYS_PRM.resume() # ip resume
 		elif command == "merge":
-			SYS_PRM.merge() # ip merge [pos1] [pos2]
+			poss = msg.split();
+			if len(msg)==2:
+				pos1 = int(poss[0]);
+				pos2 = int(poss[1]);
+				SYS_PRM.merge(pos1, pos2) # ip merge [pos1] [pos2]
+			else:
+				print ("ERROR: merge has to have two position arguments: ")
 		elif command == "total":
 			SYS_PRM.total() # ip total [pos1 pos2 ..]
 		elif command == "print":
