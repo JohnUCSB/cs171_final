@@ -180,10 +180,10 @@ def process():
 		elif command == "print":
 			SYS_PRM.print_filenames() # ip print
 			# DEBUG
-			textstream = SYS_PRM.print_logs()
-			print "sending: ",
-			print textstream
-			SYS_PRM.send_cli(textstream)
+			SYS_PRM.print_logs()
+			#print "printing: ",
+			#print textstream
+			#SYS_PRM.send_cli(textstream)
 			# --DEBUG--
 		else:
 			print ("ERROR: unknown query command: ")
@@ -222,19 +222,35 @@ class PRM(object):
 	def merge(self):
 		if not self.stopped:
 			return
+
 	def total(self):
 		if not self.stopped:
-			return
+			total_result = {}
+			for log in self.Logs:
+				for word in log.word_dict:
+					if not word in total_result:
+						total_result[word] = log[word]
+					else:
+						total_result[word] += log[word]
+				word, count = line.split()
+				count = int(count)
+				if not word in self.word_dict:
+					self.word_dict[word] = count
+				else:
+					self.word_dict[word] += count
+			print total_result
+
 	def print_filenames(self):
 		if not self.stopped:
 			return
+
 	def print_logs(self):
 		if not self.stopped:
 			ret = ""
 			index = 0
 			for log in self.logs:
 				ret += "0: " + str(log.word_dict) + " from " + str(log.filename) + "\n"
-			return ret
+			print ret
 
 	# Helpers
 	def prepare(self):
