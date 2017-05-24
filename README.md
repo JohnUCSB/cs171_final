@@ -12,9 +12,6 @@ TODO
 * PRM: stop/resume 
 * PRM: other print/merge/total commands from CLI
 
-** Less concerning todos:
-* may want to have a set up file for ip and ports according to: https://piazza.com/class/j0gbt8opotz2rh?cid=144
-
 Azure Virtual Machines
 ==============
 ### ssh [login] --- [ip address]:
