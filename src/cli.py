@@ -87,13 +87,14 @@ def process(ip):
 				s.close()
 			#exit
 			elif tokens[0]=="exit":
-				if len(tokens) == 1 or tokens[1] == "cli":
-					print("exiting")
-					break
-				elif tokens[1] == "prm":
-					s.connect((ip, 5005))
-					s.sendall("exit")
-					s.close()
+				if len(tokens) > 1:
+					if tokens[1] == "cli":
+						print("exiting")
+						break
+					elif tokens[1] == "prm":
+						s.connect((ip, 5005))
+						s.sendall("exit")
+						s.close()
 				#if no argument given, exit both cli and prm
 				else:
 					s.connect((ip, 5005))
