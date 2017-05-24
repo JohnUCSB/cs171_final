@@ -227,9 +227,9 @@ class PRM(object):
 			for log in to_be_merged:
 				for word in log.word_dict:
 					if not word in merge_result:
-						merge_result[word] = log[word]
+						merge_result[word] = log.word_dict[word]
 					else:
-						merge_result[word] += log[word]
+						merge_result[word] += log.word_dict[word]
 			print merge_result
 
 	def total(self):
@@ -238,9 +238,9 @@ class PRM(object):
 			for log in self.logs:
 				for word in log.word_dict:
 					if not word in total_result:
-						total_result[word] = log[word]
+						total_result[word] = log.word_dict[word]
 					else:
-						total_result[word] += log[word]
+						total_result[word] += log.word_dict[word]
 			print total_result
 
 	def print_filenames(self):
