@@ -287,17 +287,17 @@ class PRM(object):
 			return
 
 	def print_logs(self):
-		if not self.stopped:
-			#print "plain logs:"
-			#print self.logs
-			ordered_logs = OrderedDict(sorted(self.logs.items(), key=lambda t: t[0]))
-			#print "ordered_logs:"
-			#print ordered_logs
-			ret = ""
-			for index in ordered_logs:
-				log = ordered_logs[index]
-				ret += str(index) + ": " + str(log.word_dict) + " from " + str(log.filename) + "\n"
-			print ret
+		#if not self.stopped: print works at all time
+		#print "plain logs:"
+		#print self.logs
+		ordered_logs = OrderedDict(sorted(self.logs.items(), key=lambda t: t[0]))
+		#print "ordered_logs:"
+		#print ordered_logs
+		ret = ""
+		for index in ordered_logs:
+			log = ordered_logs[index]
+			ret += str(index) + ": " + str(log.word_dict) + " from " + str(log.filename) + "\n"
+		print ret
 
 	# Helpers
 	def prepare(self):
@@ -343,12 +343,11 @@ class PRM(object):
 			maxIndex_foregin = int(index_str)
 			debug_msg = "DEBUG: recovery_ans has maxIndex_local: " + str(maxIndex_local) + " index_str: " + str(index_str) + " maxIndex_foregin: " + str(maxIndex_foregin)
 			print (debug_msg)
-			if maxIndex_local < maxIndex_local:
-				while maxIndex_foregin <= maxIndex_local:
-					indexed_log= [maxIndex_foregin, self.logs[maxIndex_foregin]] #[index, log object]
-					textstream = pickle.dumps(indexed_log, protocol=pickle.HIGHEST_PROTOCOL)
-					self.send_prm("recovery_res " + textstream)
-					maxIndex_foregin += 1
+			while maxIndex_foregin < maxIndex_local:
+				indexed_log= [maxIndex_foregin, self.logs[maxIndex_foregin]] #[index, log object]
+				textstream = pickle.dumps(indexed_log, protocol=pickle.HIGHEST_PROTOCOL)
+				self.send_prm("recovery_res " + textstream)
+				maxIndex_foregin += 1
 	def recovery_rec(self, msg):
 		if not self.stopped:
 			indexed_log = pickle.loads(msg)
