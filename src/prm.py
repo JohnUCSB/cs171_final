@@ -6,6 +6,7 @@ import socket
 import time
 import pickle
 import os.path
+from collections import OrderedDict
 
 QUERY_Q = Queue.Queue()
 QUERY_LOCK = threading.Lock()
