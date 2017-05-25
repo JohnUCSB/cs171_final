@@ -145,7 +145,7 @@ def process():
 					if accept_array[1][0] > len(SYS_PRM.logs):
 						SYS_PRM.recovery_req();
 					#put received log on appropriate indexed slot
-					SYS_PRM.logs[accept_array[1][0]](accept_array[1][1])
+					SYS_PRM.logs[accept_array[1][0]] = accept_array[1][1]
 					if SYS_PRM.id == b_new[1]:
 						# sender with first majority
 						SYS_PRM.wait_queue.popleft()
@@ -166,7 +166,8 @@ def process():
 				pickle_array = [b_new, accept_array[1]]
 				textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
 				SYS_PRM.send_prm(textstream)
-				SYS_PRM.logs.append(accept_array[1][1])
+				SYS_PRM.logs[accept_array[1][0]] = accept_array[1][1]
+				#SYS_PRM.logs.append(accept_array[1][1])
 				print "<sending accept via accept to all!>"
 			else:
 				print "hi2.2"
@@ -227,7 +228,7 @@ class PRM(object):
 		self.accept_val = None
 		self.first_accept_majority = False
 		# Logs
-		self.logs = []
+		self.logs = {}
 		self.wait_queue = collections.deque()
 		#status
 		self.stopped = False
@@ -277,11 +278,10 @@ class PRM(object):
 
 	def print_logs(self):
 		if not self.stopped:
+			OrderedDict(sorted(logs.items(), key=lambda t: t[0]))
 			ret = ""
-			index = 0
-			for log in self.logs:
+			for index,log in self.logs:
 				ret += str(index) + ": " + str(log.word_dict) + " from " + str(log.filename) + "\n"
-				index += 1
 			print ret
 
 	# Helpers
