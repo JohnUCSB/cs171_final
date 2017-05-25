@@ -58,6 +58,9 @@ def process():
 	# wait 5 seconds for other servers
 	time.sleep(5)
 
+	#check for lost logs when starting
+	SYS_PRM.recovery_req()
+
 	while True:
 		if QUERY_Q.empty():
 			#if SYS_PRM.accept_num == None and len(SYS_PRM.wait_queue) > 0:
@@ -234,8 +237,6 @@ class PRM(object):
 		self.wait_queue = collections.deque()
 		#status
 		self.stopped = False
-		#check for lost logs
-		self.recovery_req()
 
 	# PRM calls from CLI
 	def replicate(self, filename):
