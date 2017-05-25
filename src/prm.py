@@ -191,6 +191,7 @@ def process():
 				print ("ERROR: cannot find file, given file name: ")
 				print (msg)
 		elif command == "stop":
+			print("DEBUG: stop received")
 			SYS_PRM.stop() # ip stop
 		elif command == "resume":
 			print msg

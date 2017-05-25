@@ -81,7 +81,7 @@ def process(ip):
 			#merge pos1 pos2
 			elif tokens[0]=="merge":
 				print("merging")
-				if len(tokens)>3:
+				if len(tokens)>2:
 					query = tokens[0]+" "+tokens[1]+" "+tokens[2]
 					s.connect((ip, 5005))
 					s.sendall(query)
