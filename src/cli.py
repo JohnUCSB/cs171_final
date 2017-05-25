@@ -58,6 +58,9 @@ def process(ip):
 			#stop
 			elif tokens[0]=="stop":
 				print("stopping")
+				s.connect((ip, 5005))
+				s.sendall(tokens[0])
+				s.close()
 			#resume
 			elif tokens[0]=="resume":
 				print("resumming")
