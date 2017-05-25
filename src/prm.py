@@ -279,9 +279,12 @@ class PRM(object):
 
 	def print_logs(self):
 		if not self.stopped:
-			OrderedDict(sorted(self.logs.items(), key=lambda t: t[0]))
+			print "plain logs:"
+			print self.logs
+
+			ordered_logs = OrderedDict(sorted(self.logs.items(), key=lambda t: t[0]))
 			ret = ""
-			for index,log in self.logs:
+			for index,log in ordered_logs:
 				ret += str(index) + ": " + str(log.word_dict) + " from " + str(log.filename) + "\n"
 			print ret
 
