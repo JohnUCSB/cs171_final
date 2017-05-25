@@ -283,6 +283,8 @@ class PRM(object):
 			print self.logs
 
 			ordered_logs = OrderedDict(sorted(self.logs.items(), key=lambda t: t[0]))
+			print "ordered_logs:"
+			print ordered_logs
 			ret = ""
 			for index,log in ordered_logs:
 				ret += str(index) + ": " + str(log.word_dict) + " from " + str(log.filename) + "\n"
