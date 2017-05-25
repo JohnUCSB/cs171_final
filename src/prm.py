@@ -5,6 +5,7 @@ import threading
 import socket
 import time
 import pickle
+import os.path
 
 QUERY_Q = Queue.Queue()
 QUERY_LOCK = threading.Lock()
@@ -112,7 +113,7 @@ def process():
 				# update Paxos info
 				SYS_PRM.first_accept_majority = True
 				SYS_PRM.accept_num = ack_array[0] 
-				SYS_PRM.accept_val = [len(SYS_PRM.logs), SYS_PRM.wait_queue[0]] #[index, log object]
+				SYS_PRM.accept_val = [len(SYS_PRM.logs)-1, SYS_PRM.wait_queue[0]] #[index, log object]
 				# send out accepts
 				pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_val]
 				textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
@@ -140,7 +141,11 @@ def process():
 					SYS_PRM.first_accept_majority = False
 					print accept_array
 					print accept_array[1]
-					SYS_PRM.logs.append(accept_array[1][1])
+					#check if the reciving log has index greater than current index+1, which means missing logs
+					if accept_array[1][0] > len(SYS_PRM.logs):
+						SYS_PRM.recovery_req();
+					#put received log on appropriate indexed slot
+					SYS_PRM.logs[accept_array[1][0]](accept_array[1][1])
 					if SYS_PRM.id == b_new[1]:
 						# sender with first majority
 						SYS_PRM.wait_queue.popleft()
@@ -167,9 +172,20 @@ def process():
 				print "hi2.2"
 				# won ballet -- do nothing
 				continue
+
+		#Recovery commands
+		elif command == "recovery_req":
+			SYS_PRM.recovery_ans(msg)
+		elif command == "recovery_res"
+			SYS_PRM.recovery_rec(msg)
+
 		# CLI commands
 		elif command == "replicate":
-			SYS_PRM.replicate(msg) # ip replicate [filename]
+			if os.path.isfile(msg): 
+				SYS_PRM.replicate(msg) # ip replicate [filename]
+			else:
+				print ("ERROR: cannot find file, given file name: ")
+				print (msg)
 		elif command == "stop":
 			SYS_PRM.stop() # ip stop
 		elif command == "resume":
@@ -182,7 +198,8 @@ def process():
 				pos2 = int(poss[1]);
 				SYS_PRM.merge(pos1, pos2) # ip merge [pos1] [pos2]
 			else:
-				print ("ERROR: merge has to have two position arguments: ")
+				print ("ERROR: merge has to have two position arguments, but given: ")
+				print (msg)
 		elif command == "total":
 			SYS_PRM.total() # ip total [pos1 pos2 ..]
 		elif command == "print":
@@ -224,6 +241,8 @@ class PRM(object):
 		return
 	def resume(self):
 		self.stopped = False
+		#check for missing logs
+		recovery_req()
 		return
 
 	# Data query calls from CLI
@@ -292,6 +311,28 @@ class PRM(object):
 			sock.connect((self.ip, 5001))
 			sock.sendall(textstream)
 			sock.close()
+
+	#helper functions for recoverying
+	def recovery_req(self):
+		if not self.stopped:
+			maxIndex = len(self.logs)-1
+			# send
+			textstream = pickle.dumps(maxIndex, protocol=pickle.HIGHEST_PROTOCOL)
+			self.send_prm("recovery_req " + textstream)
+	def recovery_ans(self, msg):
+		if not self.stopped:
+			maxIndex_local = len(self.logs)-1
+			maxIndex_foregin = int(msg)
+			if maxIndex_local < maxIndex_local:
+				while maxIndex_foregin <= maxIndex_local:
+					indexed_log= [maxIndex_foregin, self.logs[maxIndex_foregin]] #[index, log object]
+					textstream = pickle.dumps(indexed_log, protocol=pickle.HIGHEST_PROTOCOL)
+					self.send_prm("recovery_res " + textstream)
+					maxIndex_foregin += 1
+	def recovery_rec(self, msg):
+		if not self.stopped:
+			indexed_log = pickle.loads(msg)
+			self.logs[indexed_log[0]]=indexed_log[1]
 
 class Log(object):
 	def __init__(self, filename):
