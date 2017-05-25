@@ -197,7 +197,7 @@ def process():
 				print ("ERROR: cannot find file, given file name: ")
 				print (msg)
 		elif command == "stop":
-			print("DEBUG: stop received")
+			#print("DEBUG: stop received")
 			SYS_PRM.stop() # ip stop
 		elif command == "resume":
 			print msg
@@ -340,7 +340,9 @@ class PRM(object):
 		if not self.stopped:
 			maxIndex_local = len(self.logs)-1
 			index_str = pickle.loads(msg)
-			maxIndex_foregin = index_str
+			maxIndex_foregin = int(index_str)
+			debug_msg = "DEBUG: recovery_ans has maxIndex_local: " + str(maxIndex_local) + " index_str: " + str(index_str) + " maxIndex_foregin: " + str(maxIndex_foregin)
+			print (debug_msg)
 			if maxIndex_local < maxIndex_local:
 				while maxIndex_foregin <= maxIndex_local:
 					indexed_log= [maxIndex_foregin, self.logs[maxIndex_foregin]] #[index, log object]
@@ -350,6 +352,8 @@ class PRM(object):
 	def recovery_rec(self, msg):
 		if not self.stopped:
 			indexed_log = pickle.loads(msg)
+			print ("DEBUG: recovery_rec has indexed_log: ")
+			print (indexed_log)
 			self.logs[indexed_log[0]]=indexed_log[1]
 
 class Log(object):
