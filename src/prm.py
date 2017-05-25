@@ -344,10 +344,10 @@ class PRM(object):
 			debug_msg = "DEBUG: recovery_ans has maxIndex_local: " + str(maxIndex_local) + " index_str: " + str(index_str) + " maxIndex_foregin: " + str(maxIndex_foregin)
 			print (debug_msg)
 			while maxIndex_foregin < maxIndex_local:
+				maxIndex_foregin += 1
 				indexed_log= [maxIndex_foregin, self.logs[maxIndex_foregin]] #[index, log object]
 				textstream = pickle.dumps(indexed_log, protocol=pickle.HIGHEST_PROTOCOL)
 				self.send_prm("recovery_res " + textstream)
-				maxIndex_foregin += 1
 	def recovery_rec(self, msg):
 		if not self.stopped:
 			indexed_log = pickle.loads(msg)
