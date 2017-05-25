@@ -91,92 +91,95 @@ def process():
 		# Exit
 		if command == "exit":
 			break
-		# PRM commands
+		# PRM commands May want to wrap these three functions into the class
 		elif command == "prepare":
-			# ip prepare pickle_stream(ballot_num)
-			b_new = pickle.loads(msg)
-			b_old = SYS_PRM.ballot_num
-			# compare ballot
-			if b_new[0] > b_old[0] or (b_new[0] == b_old[0] and b_new[1] > b_old[1]):
-				# lost ballot
-				SYS_PRM.ballot_num = b_new
-				# reply with "ack" pickle([ballot_num, accept_num, accept_val])
-				SYS_PRM.first_accept_majority = True
-				pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_num, SYS_PRM.accept_val]
-				textstream = "ack " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
-				SYS_PRM.send(src_ip, 5005, textstream)
-				print "<sending ack to 5004!>"
+			if not SYS_PRM.stopped:
+				# ip prepare pickle_stream(ballot_num)
+				b_new = pickle.loads(msg)
+				b_old = SYS_PRM.ballot_num
+				# compare ballot
+				if b_new[0] > b_old[0] or (b_new[0] == b_old[0] and b_new[1] > b_old[1]):
+					# lost ballot
+					SYS_PRM.ballot_num = b_new
+					# reply with "ack" pickle([ballot_num, accept_num, accept_val])
+					SYS_PRM.first_accept_majority = True
+					pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_num, SYS_PRM.accept_val]
+					textstream = "ack " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
+					SYS_PRM.send(src_ip, 5005, textstream)
+					print "<sending ack to 5004!>"
 		elif command == "ack":
-			# ip ack pickle_stream([ballot_num, accept_num, accept_val])
-			# Note: there are only 3 nodes, so recving any "ack" + yourself is majority
-			# Note: if you recv "ack", you already won the ballot once
-			ack_array = pickle.loads(msg)
-			if SYS_PRM.ballot_num == ack_array[0] and SYS_PRM.accept_num != ack_array[0]:
-				# still same ballot AND
-				# first majority after recving "ack"
-				# update Paxos info
-				SYS_PRM.first_accept_majority = True
-				SYS_PRM.accept_num = ack_array[0] 
-				SYS_PRM.accept_val = [len(SYS_PRM.logs), SYS_PRM.wait_queue[0]] #[index, log object]
-				# send out accepts
-				pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_val]
-				textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
-				SYS_PRM.send_prm(textstream)
-				print "<sending accept via ack to all!>"
+			if not SYS_PRM.stopped:
+				# ip ack pickle_stream([ballot_num, accept_num, accept_val])
+				# Note: there are only 3 nodes, so recving any "ack" + yourself is majority
+				# Note: if you recv "ack", you already won the ballot once
+				ack_array = pickle.loads(msg)
+				if SYS_PRM.ballot_num == ack_array[0] and SYS_PRM.accept_num != ack_array[0]:
+					# still same ballot AND
+					# first majority after recving "ack"
+					# update Paxos info
+					SYS_PRM.first_accept_majority = True
+					SYS_PRM.accept_num = ack_array[0] 
+					SYS_PRM.accept_val = [len(SYS_PRM.logs), SYS_PRM.wait_queue[0]] #[index, log object]
+					# send out accepts
+					pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_val]
+					textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
+					SYS_PRM.send_prm(textstream)
+					print "<sending accept via ack to all!>"
 		elif command == "accept":
-			print "hi1"
-			# ip accept pickle_stream([ballot_num, accept_val([index, log object])])
-			accept_array = pickle.loads(msg)
-			b_new = accept_array[0]
-			b_old = SYS_PRM.ballot_num
-			print accept_array
-			print b_new
-			print SYS_PRM.accept_num
-			# compare ballot
-			if SYS_PRM.ballot_num == b_new:
-				print "hi2"
-				# got majority for your accept
-				if SYS_PRM.first_accept_majority:
-					print "hi3"
-					# FIRST confirmation of majority
-					# TODO: check if you're missing any!
+			if not SYS_PRM.stopped:
+				print "hi1"
+				# ip accept pickle_stream([ballot_num, accept_val([index, log object])])
+				accept_array = pickle.loads(msg)
+				b_new = accept_array[0]
+				b_old = SYS_PRM.ballot_num
+				print accept_array
+				print b_new
+				print SYS_PRM.accept_num
+				# compare ballot
+				if SYS_PRM.ballot_num == b_new:
+					print "hi2"
+					# got majority for your accept
+					if SYS_PRM.first_accept_majority:
+						print "hi3"
+						# FIRST confirmation of majority
+						# TODO: check if you're missing any!
+						SYS_PRM.accept_num = None
+						SYS_PRM.accept_val = None
+						SYS_PRM.first_accept_majority = False
+						print accept_array
+						print accept_array[1]
+						#check if the reciving log has index greater than current index+1, which means missing logs
+						if accept_array[1][0] > len(SYS_PRM.logs):
+							SYS_PRM.recovery_req();
+						#put received log on appropriate indexed slot
+						SYS_PRM.logs[accept_array[1][0]] = accept_array[1][1]
+						if SYS_PRM.id == b_new[1]:
+							# sender with first majority
+							SYS_PRM.wait_queue.popleft()
+						else:
+							# pass on accepts (not original sender)
+							pickle_array = [b_new, accept_array[1]]
+							textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
+							SYS_PRM.send_prm(textstream)
+							print "<sending accept via accept to all!>"
+				elif b_new[0] > b_old[0] or (b_new[0] == b_old[0] and b_new[1] > b_old[1]):
+					print "hi2.1"
+					# lost ballet
+					# update Paxos info
+					SYS_PRM.ballot_num = b_new
 					SYS_PRM.accept_num = None
 					SYS_PRM.accept_val = None
-					SYS_PRM.first_accept_majority = False
-					print accept_array
-					print accept_array[1]
-					#check if the reciving log has index greater than current index+1, which means missing logs
-					if accept_array[1][0] > len(SYS_PRM.logs):
-						SYS_PRM.recovery_req();
-					#put received log on appropriate indexed slot
+					# send out accepts
+					pickle_array = [b_new, accept_array[1]]
+					textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
+					SYS_PRM.send_prm(textstream)
 					SYS_PRM.logs[accept_array[1][0]] = accept_array[1][1]
-					if SYS_PRM.id == b_new[1]:
-						# sender with first majority
-						SYS_PRM.wait_queue.popleft()
-					else:
-						# pass on accepts (not original sender)
-						pickle_array = [b_new, accept_array[1]]
-						textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
-						SYS_PRM.send_prm(textstream)
-						print "<sending accept via accept to all!>"
-			elif b_new[0] > b_old[0] or (b_new[0] == b_old[0] and b_new[1] > b_old[1]):
-				print "hi2.1"
-				# lost ballet
-				# update Paxos info
-				SYS_PRM.ballot_num = b_new
-				SYS_PRM.accept_num = None
-				SYS_PRM.accept_val = None
-				# send out accepts
-				pickle_array = [b_new, accept_array[1]]
-				textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
-				SYS_PRM.send_prm(textstream)
-				SYS_PRM.logs[accept_array[1][0]] = accept_array[1][1]
-				#SYS_PRM.logs.append(accept_array[1][1])
-				print "<sending accept via accept to all!>"
-			else:
-				print "hi2.2"
-				# won ballet -- do nothing
-				continue
+					#SYS_PRM.logs.append(accept_array[1][1])
+					print "<sending accept via accept to all!>"
+				else:
+					print "hi2.2"
+					# won ballet -- do nothing
+					continue
 
 		#Recovery commands
 		elif command == "recovery_req":
