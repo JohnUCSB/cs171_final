@@ -113,7 +113,7 @@ def process():
 				# update Paxos info
 				SYS_PRM.first_accept_majority = True
 				SYS_PRM.accept_num = ack_array[0] 
-				SYS_PRM.accept_val = [len(SYS_PRM.logs)-1, SYS_PRM.wait_queue[0]] #[index, log object]
+				SYS_PRM.accept_val = [len(SYS_PRM.logs), SYS_PRM.wait_queue[0]] #[index, log object]
 				# send out accepts
 				pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_val]
 				textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
@@ -177,6 +177,8 @@ def process():
 		elif command == "recovery_req":
 			SYS_PRM.recovery_ans(msg)
 		elif command == "recovery_res":
+			print("RECOVERYING: ")
+			print(msg)
 			SYS_PRM.recovery_rec(msg)
 
 		# CLI commands
