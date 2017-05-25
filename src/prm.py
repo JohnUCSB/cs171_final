@@ -246,12 +246,13 @@ class PRM(object):
 	def resume(self):
 		self.stopped = False
 		#check for missing logs
-		recovery_req()
+		self.recovery_req()
 		return
 
 	# Data query calls from CLI
 	def merge(self, pos1, pos2):
 		if not self.stopped:
+			print (str(self.stopped))
 			to_be_merged = [self.logs[pos1],self.logs[pos2]]
 			merge_result = {}
 			for log in to_be_merged:

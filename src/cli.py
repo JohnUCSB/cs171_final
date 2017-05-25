@@ -81,10 +81,13 @@ def process(ip):
 			#merge pos1 pos2
 			elif tokens[0]=="merge":
 				print("merging")
-				query = tokens[0]+" "+tokens[1]+" "+tokens[2]
-				s.connect((ip, 5005))
-				s.sendall(query)
-				s.close()
+				if len(tokens)>3:
+					query = tokens[0]+" "+tokens[1]+" "+tokens[2]
+					s.connect((ip, 5005))
+					s.sendall(query)
+					s.close()
+				else:
+					print("Usage merge: pos1 pos2")
 			#exit
 			elif tokens[0]=="exit":
 				if len(tokens) > 1:
