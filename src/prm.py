@@ -234,6 +234,8 @@ class PRM(object):
 		self.wait_queue = collections.deque()
 		#status
 		self.stopped = False
+		#check for lost logs
+		self.recovery_req()
 
 	# PRM calls from CLI
 	def replicate(self, filename):
@@ -333,7 +335,8 @@ class PRM(object):
 	def recovery_ans(self, msg):
 		if not self.stopped:
 			maxIndex_local = len(self.logs)-1
-			maxIndex_foregin = int(msg)
+			index_str = pickle.loads(msg)
+			maxIndex_foregin = index_str
 			if maxIndex_local < maxIndex_local:
 				while maxIndex_foregin <= maxIndex_local:
 					indexed_log= [maxIndex_foregin, self.logs[maxIndex_foregin]] #[index, log object]
