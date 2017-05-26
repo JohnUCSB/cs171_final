@@ -22,8 +22,6 @@ def listen(ip, port):
 		data = stream.recv(1024) # buffer size of 1024 bytes
 		if not data:
 			continue
-		print "got data"
-		print (data)
 
 def process(ip):
 	# wait 5 seconds for other servers

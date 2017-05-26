@@ -79,15 +79,6 @@ def process():
 			src_ip, command = query.split()
 			msg = ""
 
-		print "------"
-		print "source ip is: ",
-		print src_ip
-		print "command is: ",
-		print command
-		print "msg is: ",
-		print msg
-		print "---eom---"
-
 		# Exit
 		if command == "exit":
 			break
@@ -106,7 +97,6 @@ def process():
 					pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_num, SYS_PRM.accept_val]
 					textstream = "ack " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
 					SYS_PRM.send(src_ip, 5005, textstream)
-					print "<sending ack to 5004!>"
 		elif command == "ack":
 			if not SYS_PRM.stopped:
 				# ip ack pickle_stream([ballot_num, accept_num, accept_val])
@@ -124,30 +114,21 @@ def process():
 					pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_val]
 					textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
 					SYS_PRM.send_prm(textstream)
-					print "<sending accept via ack to all!>"
 		elif command == "accept":
 			if not SYS_PRM.stopped:
-				print "hi1"
 				# ip accept pickle_stream([ballot_num, accept_val([index, log object])])
 				accept_array = pickle.loads(msg)
 				b_new = accept_array[0]
 				b_old = SYS_PRM.ballot_num
-				print accept_array
-				print b_new
-				print SYS_PRM.accept_num
 				# compare ballot
 				if SYS_PRM.ballot_num == b_new:
-					print "hi2"
 					# got majority for your accept
 					if SYS_PRM.first_accept_majority:
-						print "hi3"
 						# FIRST confirmation of majority
 						# TODO: check if you're missing any!
 						SYS_PRM.accept_num = None
 						SYS_PRM.accept_val = None
 						SYS_PRM.first_accept_majority = False
-						print accept_array
-						print accept_array[1]
 						#check if the reciving log has index greater than current index+1, which means missing logs
 						if accept_array[1][0] > len(SYS_PRM.logs):
 							SYS_PRM.recovery_req();
@@ -161,9 +142,7 @@ def process():
 							pickle_array = [b_new, accept_array[1]]
 							textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
 							SYS_PRM.send_prm(textstream)
-							print "<sending accept via accept to all!>"
 				elif b_new[0] > b_old[0] or (b_new[0] == b_old[0] and b_new[1] > b_old[1]):
-					print "hi2.1"
 					# lost ballet
 					# update Paxos info
 					SYS_PRM.ballot_num = b_new
@@ -174,10 +153,7 @@ def process():
 					textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
 					SYS_PRM.send_prm(textstream)
 					SYS_PRM.logs[accept_array[1][0]] = accept_array[1][1]
-					#SYS_PRM.logs.append(accept_array[1][1])
-					print "<sending accept via accept to all!>"
 				else:
-					print "hi2.2"
 					# won ballet -- do nothing
 					continue
 
@@ -185,8 +161,7 @@ def process():
 		elif command == "recovery_req":
 			SYS_PRM.recovery_ans(msg)
 		elif command == "recovery_res":
-			print("RECOVERYING: ")
-			print(msg)
+			print("recovering..")
 			SYS_PRM.recovery_rec(msg)
 
 		# CLI commands
@@ -197,10 +172,10 @@ def process():
 				print ("ERROR: cannot find file, given file name: ")
 				print (msg)
 		elif command == "stop":
-			#print("DEBUG: stop received")
+			print "stopping.."
 			SYS_PRM.stop() # ip stop
 		elif command == "resume":
-			print msg
+			print "resuming.."
 			SYS_PRM.resume() # ip resume
 		elif command == "merge":
 			poss = msg.split();
@@ -215,12 +190,6 @@ def process():
 			SYS_PRM.total() # ip total [pos1 pos2 ..]
 		elif command == "print":
 			SYS_PRM.print_filenames() # ip print
-			# DEBUG
-			SYS_PRM.print_logs()
-			#print "printing: ",
-			#print textstream
-			#SYS_PRM.send_cli(textstream)
-			# --DEBUG--
 		else:
 			print ("ERROR: unknown query command: ")
 			print (command)
@@ -259,7 +228,6 @@ class PRM(object):
 	# Data query calls from CLI
 	def merge(self, pos1, pos2):
 		if not self.stopped:
-			print (str(self.stopped))
 			to_be_merged = [self.logs[pos1],self.logs[pos2]]
 			merge_result = {}
 			for log in to_be_merged:
@@ -283,16 +251,15 @@ class PRM(object):
 			print total_result
 
 	def print_filenames(self):
-		if not self.stopped:
-			return
+		ordered_logs = OrderedDict(sorted(self.logs.items(), key=lambda t: t[0]))
+		ret = ""
+		for index in ordered_logs:
+			log = ordered_logs[index]
+			ret += str(log.filename) + "\n"
+		print ret
 
 	def print_logs(self):
-		#if not self.stopped: print works at all time
-		#print "plain logs:"
-		#print self.logs
 		ordered_logs = OrderedDict(sorted(self.logs.items(), key=lambda t: t[0]))
-		#print "ordered_logs:"
-		#print ordered_logs
 		ret = ""
 		for index in ordered_logs:
 			log = ordered_logs[index]
@@ -342,7 +309,6 @@ class PRM(object):
 			index_str = pickle.loads(msg)
 			maxIndex_foregin = int(index_str)
 			debug_msg = "DEBUG: recovery_ans has maxIndex_local: " + str(maxIndex_local) + " index_str: " + str(index_str) + " maxIndex_foregin: " + str(maxIndex_foregin)
-			print (debug_msg)
 			while maxIndex_foregin < maxIndex_local:
 				maxIndex_foregin += 1
 				indexed_log= [maxIndex_foregin, self.logs[maxIndex_foregin]] #[index, log object]
@@ -351,8 +317,6 @@ class PRM(object):
 	def recovery_rec(self, msg):
 		if not self.stopped:
 			indexed_log = pickle.loads(msg)
-			print ("DEBUG: recovery_rec has indexed_log: ")
-			print (indexed_log)
 			self.logs[indexed_log[0]]=indexed_log[1]
 
 class Log(object):
