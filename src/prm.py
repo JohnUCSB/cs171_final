@@ -39,7 +39,7 @@ def listen(ip, port):
 	sock.listen(16)
 
 	# wait 5 seconds for other servers
-	time.sleep(3)
+	time.sleep(5)
 
 	while True:
 		stream, addr = sock.accept() # rcv stream
@@ -56,7 +56,9 @@ def listen(ip, port):
 
 def process():
 	# wait 5 seconds for other servers
-	time.sleep(7)
+	time.sleep(5)
+
+	print ("<Welcome to PRM>")
 
 	#check for lost logs when starting
 	SYS_PRM.recovery_req()
