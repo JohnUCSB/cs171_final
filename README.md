@@ -7,10 +7,8 @@ TODO
 ==============
 * mappers (2)
 * reducer (1)
-* PRM: randomized delay for failed propose/accepts
-* PRM: checking for recovery (if there are any missing logs) after "resume" & quick checks after each "accept"
-* PRM: stop/resume 
-* PRM: other print/merge/total commands from CLI
+* PRM: fails if you don't start all ~3 PRM's within 5 seconds
+* PRM: fails if you use large positions for merge [pos1] [pos2]
 
 Azure Virtual Machines
 ==============
