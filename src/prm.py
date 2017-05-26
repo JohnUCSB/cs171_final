@@ -163,7 +163,6 @@ def process():
 		elif command == "recovery_req":
 			SYS_PRM.recovery_ans(msg)
 		elif command == "recovery_res":
-			print("recovering..")
 			SYS_PRM.recovery_rec(msg)
 
 		# CLI commands
