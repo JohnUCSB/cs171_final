@@ -19,6 +19,7 @@ Azure Virtual Machines
 * ssh   ethangeon@52.161.104.183  ---  	10.0.1.4
 * ssh   ethangeon@52.161.108.70   ---  10.0.1.5
 * ssh   ethangeon@52.161.109.240  --- 10.0.1.6
+* Password: ethangeon17!
 ### Port Numbers:
 * 5001 - CLI
 * 5002 - Map1
