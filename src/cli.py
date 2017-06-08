@@ -40,9 +40,14 @@ def process(ip):
 			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 			#3.1 Data processing calls
-			#map filename #milestone 2
 			if tokens[0]=="map":
-				print("milestone 2")
+				filename = tokens[1]
+				total_count = len(open(filename, "r").read().split())
+				half = total_count/2
+				s.connect((ip, 5002))
+				s.sendall("map " + filename + " 0 " + str(half))
+				s.connect((ip, 5003))
+				s.sendall("map " + filename + " " + str(half) + " " + str(total_count-half))
 			#reduce filename1 filename2 ..... #milestone 2
 			elif tokens[0]=="reduce":
 				print("milestone 2")

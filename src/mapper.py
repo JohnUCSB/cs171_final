@@ -5,6 +5,7 @@ import threading
 QUERY_Q = Queue.Queue()
 QUERY_LOCK = threading.Lock()
 sys_id = 0
+sys_dict = {}
 
 def listen(ip, port):
 	# receive message - TCP
@@ -50,18 +51,32 @@ def process():
 		if cmd == "exit":
 			break
 		elif cmd == "map":
-			offset = int(offset)
+			# process infile
+			i = int(offset)
 			read_size = int(read_size)
-			filestream = open(filename, "r").read().splitlines()
-			for line in filestream:
-				
+			words = open(filename, "r").read().split()
+			while(read_size > 0 and i < len(words)):
+				if words[i] in sys_dict:
+					sys_dict[words[i]] = 1
+				else:
+					sys_dict[words[i]] += 1
+				#incre/decrement
+				i += 1
+				read_size -= 1
+			# write to outfile
+			outfilename =  filename + "_I_" + str(sys_id)
+			f = open(outfilename, "w")
+			for key in words:
+				f.write(key + " " + str(words[key]) + "\n")
+			f.close()
+			print "Completed mapping " + filename + " (id " + str(sys_id) + ")"
 		else:
 			print ("ERROR: unknown query command: ")
 			print (cmd)
 
 
 def main():
-	global QUERY_Q, QUERY_LOCK, sys_id
+	global QUERY_Q, QUERY_LOCK, sys_id, sys_dict
 
 	# NOTE: 
 	# sys_id = 1 -> port 5002
