@@ -66,7 +66,7 @@ def process():
 				i += 1
 				read_size -= 1
 			# write to outfile
-			outfilename =  filename + "_I_" + str(sys_id)
+			outfilename =  filename.split(".",1)[0] + "_I_" + str(sys_id)
 			f = open(outfilename, "w")
 			for key in sys_dict:
 				f.write(key + " " + str(sys_dict[key]) + "\n")
