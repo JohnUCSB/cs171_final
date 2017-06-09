@@ -53,11 +53,13 @@ def process(ip):
 				s.close()
 			#reduce filename1 filename2 ..... #milestone 2
 			elif tokens[0]=="reduce":
-				filenamesString
+				filenamesString = ""
 				for index, token in enumerate(tokens):
 					if index!=0: filenamesString = filenamesString + token + ";"
+				query = "reduce "+ filenamesString
+				print("Querry--"query)
 				s.connect((ip, 5004))
-				s.sendall("reduce "+ filenamesString)
+				s.sendall(query)
 				s.close()
 			#replicate filename
 			elif tokens[0]=="replicate":

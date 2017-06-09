@@ -6,6 +6,7 @@ import threading
 
 QUERY_Q = Queue.Queue()
 QUERY_LOCK = threading.Lock()
+FILEPATH = "./test/"
 
 def listen(ip, port):
 	# receive message - TCP
@@ -39,6 +40,7 @@ def process():
 		query = QUERY_Q.get()
 		QUERY_LOCK.release()
 		filenamesString = ""
+		print ("Query--" + query)
 		# parse query data
 		if query.count(" ") == 1:
 			cmd, filenamesString = query.split()
@@ -78,7 +80,7 @@ def reduce(filenamesString):
 
 		#update dictionary with each file
 		try:
-			filestream = open(filename, "r")
+			filestream = open((FILEPATH + filename), "r")
 			for line in filestream:
 				word, count = line.split()
 				count = int(count)
@@ -96,7 +98,7 @@ def reduce(filenamesString):
 	#write reduced result to file
 	# write to outfile
 	outfilename =  filename + "_reduced"
-	f = open(outfilename, "w")
+	f = open((FILEPATH + outfilename), "w")
 	for key in reduced:
 		f.write(key + " " + str(words[key]) + "\n")
 	f.close()
