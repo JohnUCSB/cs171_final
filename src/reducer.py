@@ -27,7 +27,7 @@ def listen(ip, port):
 		QUERY_Q.put(data)
 		QUERY_LOCK.release()
 		# Exit
-		if data.split()[1] == "exit":
+		if data.split()[0] == "exit":
 			break
 
 def process():
@@ -53,8 +53,7 @@ def process():
 		if cmd == "exit":
 			break
 		elif cmd == "reduce":
-			reduce(filenamesString)
-				
+			reduce(filenamesString)		
 		else:
 			print ("ERROR: unknown query command: ")
 			print (cmd)
