@@ -6,7 +6,6 @@ import threading
 
 QUERY_Q = Queue.Queue()
 QUERY_LOCK = threading.Lock()
-sys_id = 0
 
 def listen(ip, port):
 	# receive message - TCP
@@ -104,14 +103,14 @@ def reduce(filenamesString):
 
 
 def main():
-	global QUERY_Q, QUERY_LOCK, sys_id
+	global QUERY_Q, QUERY_LOCK
 
 	# get arguments
 	if len(sys.argv) != 2:
 		print ("ERROR: Please check your arguments")
 		print ("USAGE: ./reducer [IP]")
 		sys.exit(0)
-	sys_id = sys.argv[1]
+	sys_ip_address = sys.argv[1]
 	sys_port = 5004
 	# run threads
 	thread1 = threading.Thread(target=process)
