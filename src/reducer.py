@@ -45,6 +45,8 @@ def process():
 		if query.count(" ") == 1:
 			cmd, filenamesString = query.split()
 			print (filenamesString)
+		else:
+			cmd = query
 		# process commands
 		if cmd == "exit":
 			break
