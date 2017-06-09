@@ -38,9 +38,11 @@ def process():
 		QUERY_LOCK.acquire()
 		query = QUERY_Q.get()
 		QUERY_LOCK.release()
+		filenamesString = ""
 		# parse query data
 		if query.count(" ") == 1:
 			cmd, filenamesString = query.split()
+			print (filenamesString)
 		else:
 			print "ERROR: invalid command"
 			print "ERROR: " + query
