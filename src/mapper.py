@@ -1,4 +1,5 @@
 import sys
+import socket
 import Queue
 import threading
 
@@ -85,10 +86,10 @@ def main():
 	# get arguments
 	if len(sys.argv) != 3:
 		print ("ERROR: Please check your arguments")
-		print ("USAGE: ./mapper [ID] [IP]")
+		print ("USAGE: ./mapper [IP] [ID]")
 		sys.exit(0)
-	sys_id = int(sys.argv[1])
-	sys_ip_address = sys.argv[2]
+	sys_ip_address = sys.argv[1]
+	sys_id = int(sys.argv[2])
 	if sys_id == 1:
 		sys_port = 5002
 	else:
