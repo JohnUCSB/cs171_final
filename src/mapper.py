@@ -68,8 +68,8 @@ def process():
 			# write to outfile
 			outfilename =  filename + "_I_" + str(sys_id)
 			f = open(outfilename, "w")
-			for key in words:
-				f.write(key + " " + str(words[key]) + "\n")
+			for key in sys_dict:
+				f.write(key + " " + str(sys_dict[key]) + "\n")
 			f.close()
 			print "Completed mapping " + filename + " (id " + str(sys_id) + ")"
 		else:
