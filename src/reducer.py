@@ -6,7 +6,7 @@ import threading
 
 QUERY_Q = Queue.Queue()
 QUERY_LOCK = threading.Lock()
-FILEPATH = "./test/"
+FILEPATH = "./"
 
 def listen(ip, port):
 	# receive message - TCP
@@ -45,10 +45,6 @@ def process():
 		if query.count(" ") == 1:
 			cmd, filenamesString = query.split()
 			print (filenamesString)
-		else:
-			print "ERROR: invalid command"
-			print "ERROR: " + query
-			continue
 		# process commands
 		if cmd == "exit":
 			break
@@ -63,10 +59,11 @@ def reduce(filenamesString):
 	partNumCount = -1
 	reduced = {}
 	origFileName = ""
-	filesnames = filenamesString.split()
+	filesnames = filenamesString.split(";")
 	for filename in filesnames:
 
 		#check if filesnames are intermediate
+		print filename
 		origFileName, I, partNum = filename.split("_")
 		if partNumCount == -1:
 			partNumCount = partNum
