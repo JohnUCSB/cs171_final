@@ -1,4 +1,6 @@
 import sys
+import socket
+import time
 import Queue
 import threading
 
@@ -105,12 +107,11 @@ def main():
 	global QUERY_Q, QUERY_LOCK, sys_id
 
 	# get arguments
-	if len(sys.argv) != 3:
+	if len(sys.argv) != 2:
 		print ("ERROR: Please check your arguments")
-		print ("USAGE: ./mapper [ID] [IP]")
+		print ("USAGE: ./mapper [IP]")
 		sys.exit(0)
 	sys_id = int(sys.argv[1])
-	sys_ip_address = sys.argv[2]
 	sys_port = 5004
 	# run threads
 	thread1 = threading.Thread(target=process)
