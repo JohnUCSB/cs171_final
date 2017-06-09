@@ -59,9 +59,9 @@ def process():
 			words = open(filename, "r").read().split()
 			while(read_size > 0 and i < len(words)):
 				if words[i] in sys_dict:
-					sys_dict[words[i]] = 1
-				else:
 					sys_dict[words[i]] += 1
+				else:
+					sys_dict[words[i]] = 1
 				#incre/decrement
 				i += 1
 				read_size -= 1

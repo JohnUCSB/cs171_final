@@ -46,8 +46,11 @@ def process(ip):
 				half = total_count/2
 				s.connect((ip, 5002))
 				s.sendall("map " + filename + " 0 " + str(half))
+				s.close()
+				s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 				s.connect((ip, 5003))
 				s.sendall("map " + filename + " " + str(half) + " " + str(total_count-half))
+				s.close()
 			#reduce filename1 filename2 ..... #milestone 2
 			elif tokens[0]=="reduce":
 				filenamesString
