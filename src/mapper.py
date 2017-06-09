@@ -2,6 +2,7 @@ import sys
 import socket
 import Queue
 import threading
+import time
 
 QUERY_Q = Queue.Queue()
 QUERY_LOCK = threading.Lock()
