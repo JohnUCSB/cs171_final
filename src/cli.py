@@ -50,7 +50,12 @@ def process(ip):
 				s.sendall("map " + filename + " " + str(half) + " " + str(total_count-half))
 			#reduce filename1 filename2 ..... #milestone 2
 			elif tokens[0]=="reduce":
-				print("milestone 2")
+				filenamesString
+				for index token in tokens:
+					if index!=0: filenamesString = filenamesString + token + ";"
+				s.connect((ip, 5004))
+				s.sendall("reduce "+ filenamesString)
+				s.close()
 			#replicate filename
 			elif tokens[0]=="replicate":
 				print("replicating")
