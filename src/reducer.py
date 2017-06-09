@@ -67,7 +67,7 @@ def reduce(filenamesString):
 		if partNumCount == -1:
 			partNumCount = partNum
 		else:
-			if partNumCount = partNum-1:
+			if partNumCount == partNum-1:
 				partNumCount += 1
 			else:
 				print ("ERROR: filename isn't intermediate: ")
