@@ -109,9 +109,9 @@ def main():
 	# get arguments
 	if len(sys.argv) != 2:
 		print ("ERROR: Please check your arguments")
-		print ("USAGE: ./mapper [IP]")
+		print ("USAGE: ./reducer [IP]")
 		sys.exit(0)
-	sys_id = int(sys.argv[1])
+	sys_id = sys.argv[1]
 	sys_port = 5004
 	# run threads
 	thread1 = threading.Thread(target=process)
