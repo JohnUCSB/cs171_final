@@ -114,6 +114,10 @@ def process(ip):
 						s.connect((ip, 5005))
 						s.sendall("exit")
 						s.close()
+					elif tokens[1] == "reducer":
+						s.connect((ip, 5004))
+						s.sendall("exit")
+						s.close()
 				#if no argument given, exit both cli and prm
 				else:
 					s.connect((ip, 5005))
