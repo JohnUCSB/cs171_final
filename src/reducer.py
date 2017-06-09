@@ -99,7 +99,7 @@ def reduce(filenamesString):
 	outfilename =  filename + "_reduced"
 	f = open((FILEPATH + outfilename), "w")
 	for key in reduced:
-		f.write(key + " " + str(words[key]) + "\n")
+		f.write(key + " " + str(reduced[key]) + "\n")
 	f.close()
 	print("Completed reducing: ")
 	print(filenamesString.replace(";"," "))
