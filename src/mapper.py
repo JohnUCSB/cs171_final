@@ -3,6 +3,7 @@ import socket
 import Queue
 import threading
 import time
+from os.path import basename
 
 QUERY_Q = Queue.Queue()
 QUERY_LOCK = threading.Lock()
@@ -66,6 +67,7 @@ def process():
 				i += 1
 				read_size -= 1
 			# write to outfile
+			filename = basename(filename)
 			outfilename =  filename.split(".",1)[0] + "_I_" + str(sys_id)
 			f = open(outfilename, "w")
 			for key in sys_dict:
