@@ -64,7 +64,8 @@ def reduce(filenamesString):
 
 		#check if filesnames are intermediate
 		print filename
-		origFileName, I, partNum = filename.split("_")
+		origFileName, I, partNumString = filename.split("_")
+		partNum = int(partNumString)
 		if partNumCount == -1:
 			partNumCount = partNum
 		else:
