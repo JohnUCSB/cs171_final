@@ -84,9 +84,9 @@ def reduce(filenamesString):
 				word, count = line.split()
 				count = int(count)
 				if word not in reduced:
-					reduced[word] = 1
+					reduced[word] = count
 				else:
-					reduced[word] += 1
+					reduced[word] += count
 		except:
 			print ("ERROR: cannot open file: ")
 			print (filename)
@@ -96,7 +96,7 @@ def reduce(filenamesString):
 
 	#write reduced result to file
 	# write to outfile
-	outfilename =  filename + "_reduced"
+	outfilename =  origFileName + "_reduced"
 	f = open((FILEPATH + outfilename), "w")
 	for key in reduced:
 		f.write(key + " " + str(reduced[key]) + "\n")
