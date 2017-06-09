@@ -54,7 +54,7 @@ def process(ip):
 			#reduce filename1 filename2 ..... #milestone 2
 			elif tokens[0]=="reduce":
 				filenamesString
-				for index token in tokens:
+				for index, token in enumerate(tokens):
 					if index!=0: filenamesString = filenamesString + token + ";"
 				s.connect((ip, 5004))
 				s.sendall("reduce "+ filenamesString)
