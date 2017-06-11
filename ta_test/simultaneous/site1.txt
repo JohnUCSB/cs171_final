@@ -1,0 +1,4 @@
+send 2 4
+sleep 1
+snapshot
+sleep 2
