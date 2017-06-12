@@ -85,10 +85,7 @@ def process():
 		QUERY_LOCK.acquire()
 		query = QUERY_Q.get()
 		QUERY_LOCK.release()
-		print ("---------------------------")
-		print ("this is query:")
-		print (query)
-		print ("---------------------------")
+		
 		if query.count(" ") >= 2:
 			src_ip, command, msg = query.split(" ", 2)
 		else:
@@ -296,16 +293,12 @@ class PRM(object):
 			textstream = pickle.dumps(self.ballot_num, protocol=pickle.HIGHEST_PROTOCOL)
 			self.send_prm("prepare " + textstream)
 	def send(self, send_ip, send_port, textstream):
-		print ("about to send: ")
-		print (textstream)
 		if not self.stopped:
 			sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			sock.connect((send_ip, send_port))
 			sock.sendall(textstream)
 			sock.close()
 	def send_prm(self, textstream):
-		print ("about to send_prm: ")
-		print (textstream)
 		if not self.stopped:
 			for dst in PRM_SEND_LIST:
 				sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
