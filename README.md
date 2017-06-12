@@ -5,13 +5,8 @@ CS171 Final Project S17
 
 TODO
 ==============
-* mappers (2)
-* reducer (1)
 * PRM: fails if you don't start all ~3 PRM's within 5 seconds
 * PRM: fails if you use large positions for merge [pos1] [pos2]
-* PRM: is "merge" supposed to actually merge them?
-* PRM: "print" only prints filenames?
-* PRM: project: randomzied delay for retrying & new ldr method? recovery
 
 Azure Virtual Machines
 ==============
