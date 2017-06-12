@@ -74,7 +74,7 @@ def process():
 	SYS_PRM.recovery_req()
 
 	while True:
-		if QUERY_Q.empty():
+		#if QUERY_Q.empty():
 			#if SYS_PRM.accept_num == None and len(SYS_PRM.wait_queue) > 0:
 				# not sending/receiving anything
 				# and SYS_PRM.wait_queue is not empty
