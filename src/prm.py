@@ -43,7 +43,8 @@ def listen(ip, port):
 
 	while True:
 		stream, addr = sock.accept() # rcv stream
-		data = stream.recv(204800) # buffer size of 10240 bytes
+		#data = stream.recv(204800) # buffer size of 10240 bytes
+		data = stream.recv(1048576) # ~1 mega byte
 		if not data:
 			continue
 		data = str(addr[0]) + " " + data
