@@ -43,17 +43,7 @@ def listen(ip, port):
 
 	while True:
 		stream, addr = sock.accept() # rcv stream
-		#data = stream.recv(204800) # buffer size of 10240 bytes
-		#data = stream.recv(1048576) # ~1 mega byte
-		
-		data = ""
-		part = ""
-		while 1:
-			part = stream.recv(1048576)
-			data += part
-			if not part:
-				break
-				
+		data = stream.recv(10240) # buffer size of 10240 bytes
 		if not data:
 			continue
 		data = str(addr[0]) + " " + data
@@ -74,18 +64,17 @@ def process():
 	SYS_PRM.recovery_req()
 
 	while True:
-		#if QUERY_Q.empty():
-			#if SYS_PRM.accept_num == None and len(SYS_PRM.wait_queue) > 0:
+		if QUERY_Q.empty():
+			if SYS_PRM.accept_num == None and len(SYS_PRM.wait_queue) > 0:
 				# not sending/receiving anything
 				# and SYS_PRM.wait_queue is not empty
-			#	SYS_PRM.prepare()
-			#continue
+				SYS_PRM.prepare()
+			continue
 
 		# Lock/unlock QUERY_LOCK
 		QUERY_LOCK.acquire()
 		query = QUERY_Q.get()
 		QUERY_LOCK.release()
-		
 		if query.count(" ") >= 2:
 			src_ip, command, msg = query.split(" ", 2)
 		else:
@@ -121,6 +110,7 @@ def process():
 					# first majority after recving "ack"
 					# update Paxos info
 					if SYS_PRM.first_ack_majority:
+						SYS_PRM.first_ack_majority = False
 						SYS_PRM.first_accept_majority = True
 						SYS_PRM.accept_num = ack_array[0] 
 						SYS_PRM.accept_val = [len(SYS_PRM.logs), SYS_PRM.wait_queue[0]] #[index, log object]
@@ -217,7 +207,7 @@ class PRM(object):
 		self.accept_num = None
 		self.accept_val = None
 		self.first_accept_majority = False
-		self.first_ack_majority = True
+		self.first_ack_majority = False
 		# Logs
 		self.logs = {}
 		self.wait_queue = collections.deque()
