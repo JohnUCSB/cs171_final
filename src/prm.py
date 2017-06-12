@@ -34,7 +34,7 @@ def setup(filename, ip):
 def listen(ip, port):
 	# receive message - TCP
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	#sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	sock.bind((ip, port))
 	sock.listen(16)
 
@@ -44,7 +44,16 @@ def listen(ip, port):
 	while True:
 		stream, addr = sock.accept() # rcv stream
 		#data = stream.recv(204800) # buffer size of 10240 bytes
-		data = stream.recv(1048576) # ~1 mega byte
+		#data = stream.recv(1048576) # ~1 mega byte
+		
+		data = ""
+		part = ""
+		while 1:
+			part = stream.recv(1048576)
+			data += part
+			if not part:
+				break
+				
 		if not data:
 			continue
 		data = str(addr[0]) + " " + data
