@@ -68,7 +68,7 @@ def process(ip):
 					if index!=0: filenamesString = filenamesString + token + ";"
 				query = "reduce "+ filenamesString
 				query = query[:-1]
-				print("Querry--" + query)
+				#print("Querry--" + query)
 				s.connect((ip, 5004))
 				s.sendall(query)
 				s.close()
