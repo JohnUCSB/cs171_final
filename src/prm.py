@@ -88,6 +88,8 @@ def process():
 		elif command == "prepare":
 			if not SYS_PRM.stopped:
 				# ip prepare pickle_stream(ballot_num)
+				print ("about to load:")
+				print (msg)
 				b_new = pickle.loads(msg)
 				b_old = SYS_PRM.ballot_num
 				# compare ballot
@@ -288,6 +290,8 @@ class PRM(object):
 			sock.sendall(textstream)
 			sock.close()
 	def send_prm(self, textstream):
+		print ("about to send: ")
+		print (textstream)
 		if not self.stopped:
 			for dst in PRM_SEND_LIST:
 				sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
