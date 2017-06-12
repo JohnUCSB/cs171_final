@@ -30,7 +30,7 @@ def listen(ip, port):
 		QUERY_Q.put(data)
 		QUERY_LOCK.release()
 		# Exit
-		if data.split()[1] == "exit":
+		if data == "exit":
 			break
 
 def process():
@@ -45,16 +45,15 @@ def process():
 		query = QUERY_Q.get()
 		QUERY_LOCK.release()
 		# parse query data
-		if query.count(" ") == 3:
+		if query == "exit":
+			break
+		elif query.count(" ") == 3:
 			cmd, filename, offset, read_size = query.split()
 		else:
 			print "ERROR: invalid command"
 			print "ERROR: " + query
 			continue
-		# process commands
-		if cmd == "exit":
-			break
-		elif cmd == "map":
+		if cmd == "map":
 			# process infile
 			i = int(offset)
 			read_size = int(read_size)
