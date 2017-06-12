@@ -34,7 +34,7 @@ def setup(filename, ip):
 def listen(ip, port):
 	# receive message - TCP
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	#sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	sock.bind((ip, port))
 	sock.listen(16)
 
