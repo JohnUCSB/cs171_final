@@ -28,6 +28,7 @@ def listen(ip, port):
 		QUERY_LOCK.release()
 		# Exit
 		if data.split()[0] == "exit":
+			print ("Exiting from listen thread")
 			break
 
 def process():
@@ -48,7 +49,8 @@ def process():
 		else:
 			cmd = query
 		# process commands
-		if cmd == "exit":
+		if cmd.split()[0] == "exit":
+			print ("Exiting from process thread")
 			break
 		elif cmd == "reduce":
 			reduce(filenamesString)		
