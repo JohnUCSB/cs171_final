@@ -75,11 +75,13 @@ def process():
 		QUERY_LOCK.acquire()
 		query = QUERY_Q.get()
 		QUERY_LOCK.release()
-		if query.count(" ") >= 2:
-			src_ip, command, msg = query.split(" ", 2)
-		else:
-			src_ip, command = query.split()
-			msg = ""
+		print ("this is query:")
+		print (query)
+		#if query.count(" ") >= 2:
+		src_ip, command, msg = query.split(" ", 2)
+		#else:
+		#	src_ip, command = query.split()
+		#	msg = ""
 
 		# Exit
 		if command == "exit":
