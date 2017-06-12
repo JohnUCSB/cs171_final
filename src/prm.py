@@ -43,7 +43,7 @@ def listen(ip, port):
 
 	while True:
 		stream, addr = sock.accept() # rcv stream
-		data = stream.recv(10240) # buffer size of 10240 bytes
+		data = stream.recv(1024) # buffer size of 1024 bytes
 		if not data:
 			continue
 		data = str(addr[0]) + " " + data
@@ -65,10 +65,10 @@ def process():
 
 	while True:
 		if QUERY_Q.empty():
-			if SYS_PRM.accept_num == None and len(SYS_PRM.wait_queue) > 0:
+			#if SYS_PRM.accept_num == None and len(SYS_PRM.wait_queue) > 0:
 				# not sending/receiving anything
 				# and SYS_PRM.wait_queue is not empty
-				SYS_PRM.prepare()
+				#SYS_PRM.prepare()
 			continue
 
 		# Lock/unlock QUERY_LOCK
@@ -109,15 +109,13 @@ def process():
 					# still same ballot AND
 					# first majority after recving "ack"
 					# update Paxos info
-					if SYS_PRM.first_ack_majority:
-						SYS_PRM.first_ack_majority = False
-						SYS_PRM.first_accept_majority = True
-						SYS_PRM.accept_num = ack_array[0] 
-						SYS_PRM.accept_val = [len(SYS_PRM.logs), SYS_PRM.wait_queue[0]] #[index, log object]
-						# send out accepts
-						pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_val]
-						textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
-						SYS_PRM.send_prm(textstream)
+					SYS_PRM.first_accept_majority = True
+					SYS_PRM.accept_num = ack_array[0] 
+					SYS_PRM.accept_val = [len(SYS_PRM.logs), SYS_PRM.wait_queue[0]] #[index, log object]
+					# send out accepts
+					pickle_array = [SYS_PRM.ballot_num, SYS_PRM.accept_val]
+					textstream = "accept " + pickle.dumps(pickle_array, protocol=pickle.HIGHEST_PROTOCOL)
+					SYS_PRM.send_prm(textstream)
 		elif command == "accept":
 			if not SYS_PRM.stopped:
 				# ip accept pickle_stream([ballot_num, accept_val([index, log object])])
@@ -207,7 +205,6 @@ class PRM(object):
 		self.accept_num = None
 		self.accept_val = None
 		self.first_accept_majority = False
-		self.first_ack_majority = False
 		# Logs
 		self.logs = {}
 		self.wait_queue = collections.deque()
@@ -277,7 +274,6 @@ class PRM(object):
 			self.ballot_num = [self.ballot_num[0]+1, self.id]
 			self.accept_num = None
 			self.accept_val = None
-			SYS_PRM.first_ack_majority = True
 			# send
 			textstream = pickle.dumps(self.ballot_num, protocol=pickle.HIGHEST_PROTOCOL)
 			self.send_prm("prepare " + textstream)
