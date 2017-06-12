@@ -42,6 +42,16 @@ def process(ip):
 			#3.1 Data processing calls
 			if tokens[0]=="map":
 				filename = tokens[1]
+				# exit call
+				if filename == "exit":
+					s.connect((ip, 5002))
+					s.sendall("map exit")
+					s.close()
+					s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+					s.connect((ip, 5003))
+					s.sendall("map exit")
+					s.close()
+					continue
 				total_count = len(open(filename, "r").read().split())
 				half = total_count/2
 				s.connect((ip, 5002))
