@@ -1,3 +1,4 @@
+import re
 import sys
 import socket
 import Queue
@@ -59,10 +60,11 @@ def process():
 			read_size = int(read_size)
 			words = open(filename, "r").read().split()
 			while(read_size > 0 and i < len(words)):
-				if words[i] in sys_dict:
-					sys_dict[words[i]] += 1
+				w = re.sub(r'\W+', '', words[i])
+				if w in sys_dict:
+					sys_dict[w] += 1
 				else:
-					sys_dict[words[i]] = 1
+					sys_dict[w] = 1
 				#incre/decrement
 				i += 1
 				read_size -= 1

@@ -1,2 +1,0 @@
-send 2 9
-sleep 3

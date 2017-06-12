@@ -1,9 +1,0 @@
-send 1 1
-send 1 4
-sleep 2
-snapshot
-send 1 1
-sleep 2
-send 1 1
-send 1 1
-sleep 2
