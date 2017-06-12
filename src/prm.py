@@ -90,8 +90,6 @@ def process():
 		elif command == "prepare":
 			if not SYS_PRM.stopped:
 				# ip prepare pickle_stream(ballot_num)
-				print ("about to load prepare:")
-				print (msg)
 				b_new = pickle.loads(msg)
 				b_old = SYS_PRM.ballot_num
 				# compare ballot
@@ -108,8 +106,6 @@ def process():
 				# ip ack pickle_stream([ballot_num, accept_num, accept_val])
 				# Note: there are only 3 nodes, so recving any "ack" + yourself is majority
 				# Note: if you recv "ack", you already won the ballot once
-				print ("about to load ack:")
-				print (msg)
 				ack_array = pickle.loads(msg)
 				if SYS_PRM.ballot_num == ack_array[0] and SYS_PRM.accept_num != ack_array[0]:
 					# still same ballot AND
