@@ -121,7 +121,6 @@ def process():
 					# first majority after recving "ack"
 					# update Paxos info
 					if SYS_PRM.first_ack_majority:
-						SYS_PRM.first_ack_majority = False
 						SYS_PRM.first_accept_majority = True
 						SYS_PRM.accept_num = ack_array[0] 
 						SYS_PRM.accept_val = [len(SYS_PRM.logs), SYS_PRM.wait_queue[0]] #[index, log object]
@@ -218,7 +217,7 @@ class PRM(object):
 		self.accept_num = None
 		self.accept_val = None
 		self.first_accept_majority = False
-		self.first_ack_majority = False
+		self.first_ack_majority = True
 		# Logs
 		self.logs = {}
 		self.wait_queue = collections.deque()
