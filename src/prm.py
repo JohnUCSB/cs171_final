@@ -75,8 +75,10 @@ def process():
 		QUERY_LOCK.acquire()
 		query = QUERY_Q.get()
 		QUERY_LOCK.release()
+		print ("---------------------------")
 		print ("this is query:")
 		print (query)
+		print ("---------------------------")
 		if query.count(" ") >= 2:
 			src_ip, command, msg = query.split(" ", 2)
 		else:
@@ -123,8 +125,6 @@ def process():
 		elif command == "accept":
 			if not SYS_PRM.stopped:
 				# ip accept pickle_stream([ballot_num, accept_val([index, log object])])
-				print ("about to load accpet:")
-				print (msg)
 				accept_array = pickle.loads(msg)
 				b_new = accept_array[0]
 				b_old = SYS_PRM.ballot_num
